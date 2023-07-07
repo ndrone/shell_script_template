@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 
 # So that when a command fails the script exists instead of continuing with the
 # rest of the script.
@@ -17,14 +17,38 @@ if [[ "${TRACE-0}" == "1" ]]; then
     set -o xtrace
 fi
 
-if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
-    echo 'Usage: ./script.sh arg-one arg-two
+COMMANDS_FLAGS="
+Help:
+    In order to pass arguments use '--' after the command like:
+    npm run script-name -- -f
 
-This is an awesome bash script to make your life better.
+    To enable debug mode set TRACE=1 ex. TRACE=1 ./script.sh
+  -h|--help:                    Lists help options
+"
 
-'
-    exit
-fi
+# Script parameters
+PARAMS=""
+
+# Process script flags/arguments
+while (( "$#" )); do
+  case "$1" in
+    -h|--help)
+        echo "$COMMANDS_FLAGS"
+        exit 0
+      ;;
+    -*|--*=) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
 
 # Change to the scripts directory
 cd "$(dirname "$0")"
@@ -34,7 +58,7 @@ cd "$(dirname "$0")"
 
 # Main body of the script goes here
 main() {
-    echo "Hello World!"
+    echo "Start your script here."
 }
 
 # Call the main function passing in all arguements
