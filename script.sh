@@ -26,8 +26,8 @@ Help:
   -h|--help:                    Lists help options
 "
 
-# Script parameters
-PARAMS=""
+# Script arguments
+ARGS=""
 
 # Process script flags/arguments
 while (( "$#" )); do
@@ -41,14 +41,14 @@ while (( "$#" )); do
       exit 1
       ;;
     *) # preserve positional arguments
-      PARAMS="$PARAMS $1"
+      ARGS="$ARGS $1"
       shift
       ;;
   esac
 done
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "$ARGS"
 
 # Change to the scripts directory
 cd "$(dirname "$0")"
